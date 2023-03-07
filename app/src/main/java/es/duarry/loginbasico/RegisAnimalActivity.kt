@@ -4,9 +4,15 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import es.duarry.loginbasico.R.drawable.petlogopet
 import es.duarry.loginbasico.databinding.RegisAnimalActivityBinding
 
@@ -15,82 +21,58 @@ class RegisAnimalActivity : AppCompatActivity() {
 
     private lateinit var binding: RegisAnimalActivityBinding
     private lateinit var bd: BaseDatos
+    private lateinit var database: DatabaseReference
+    private var animalId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = RegisAnimalActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         bd = BaseDatos(this)
+        database = FirebaseDatabase.getInstance().reference
 
         val intent = intent
         val usuario = intent.getStringExtra("usuario")
 
         binding.usuario.text = "Usuario: $usuario"
 
-        binding.btnAlta.setOnClickListener{
-            val nombre = binding.nomAnimal.text.toString()
-            val raza = binding.razaAnimal.text.toString()
-            val sexo = binding.sexoAnimal.text.toString()
-            val fecha = binding.fechAnimal.text.toString()
-            val dni = binding.dniAnimal.text.toString()
+        binding.btnAlta.setOnClickListener {
+            agregarAnimal()
 
-            if ( TextUtils.isEmpty(nombre) || TextUtils.isEmpty(raza) || TextUtils.isEmpty(sexo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(dni) ) {
-                Snackbar.make(binding.textView2, "Debes rellenar todos los campos excepto Cod. Ident.", Snackbar.LENGTH_SHORT).show()
-            } else {
-                //insertar datos
-                bd.altaAnimal(nombre,raza,sexo,fecha,dni,"https://media.ambito.com/p/cb928e70188562a84888b60513e8134c/adjuntos/239/imagenes/040/169/0040169794/mascotas-perrosjpg.jpg")
-                Snackbar.make(binding.textView2, "Animal registrado con éxito", Snackbar.LENGTH_SHORT).show()
-
-                //limpiar campos
-                limpiaCampos()
-            }
 
         }
 
-        binding.btnModifica.setOnClickListener{
-            val cod = binding.codAnimal.text.toString()
-            val nombre = binding.nomAnimal.text.toString()
-            val raza = binding.razaAnimal.text.toString()
-            val sexo = binding.sexoAnimal.text.toString()
-            val fecha = binding.fechAnimal.text.toString()
-            val dni = binding.dniAnimal.text.toString()
-
-            if ( TextUtils.isEmpty(cod)) {
-                Snackbar.make(binding.textView2, "Debes introducir el código del animal", Snackbar.LENGTH_SHORT).show()
-            } else {
-                //insertar datos
-                bd.modificaAnimal(cod,nombre,raza,sexo,fecha,dni)
-                Snackbar.make(binding.textView2, "Animal modificado con éxito", Snackbar.LENGTH_SHORT).show()
-
-                //limpiar campos
-                limpiaCampos()
-            }
-        }
-
-        binding.btnBorra.setOnClickListener{
-            val cod = binding.codAnimal.text.toString()
-
-            if ( TextUtils.isEmpty(cod)) {
-                Snackbar.make(binding.textView2, "Debes introducir el código del animal", Snackbar.LENGTH_SHORT).show()
-            } else {
-                //insertar datos
-                bd.borraAnimal(cod)
-                Snackbar.make(binding.textView2, "Animal borrado con éxito", Snackbar.LENGTH_SHORT).show()
-
-            }
-            //limpia campos
+        binding.btnModifica.setOnClickListener {
+            modificaAnimal()
             limpiaCampos()
+
         }
 
-        binding.btnConsulta.setOnClickListener{
+        binding.btnBorra.setOnClickListener {
+            if(animalId != null) {
+                eliminaAnimal(animalId!!)
+                limpiaCampos()
+            } else {
+                Toast.makeText(this, "No se puede eliminar el animal: no se ha seleccionado ningún animal", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.btnConsulta.setOnClickListener {
             val cod = binding.codAnimal.text.toString()
             val animal = bd.consultaAnimal(cod)
 
-            if ( TextUtils.isEmpty(cod)) {
-                Snackbar.make(binding.textView2, "Debes introducir el código del animal registrado", Snackbar.LENGTH_SHORT).show()
-            } else if (animal.cod == 0){
-                Snackbar.make(binding.textView2, "No existe ningún animal registrado con ese código", Snackbar.LENGTH_SHORT).show()
-            }else{
+            if (TextUtils.isEmpty(cod)) {
+                Snackbar.make(
+                    binding.textView2,
+                    "Debes introducir el código del animal registrado",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            } else if (animal.cod == 0) {
+                Snackbar.make(
+                    binding.textView2,
+                    "No existe ningún animal registrado con ese código",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            } else {
                 //actualizar campos
                 binding.nomAnimal.setText(animal.nombre)
                 binding.razaAnimal.setText(animal.raza)
@@ -101,16 +83,140 @@ class RegisAnimalActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnTodos.setOnClickListener{
+        binding.btnTodos.setOnClickListener {
             val intent = Intent(this, ListadoActivity::class.java)
             intent.putExtra("usuario", usuario)
             startActivity(intent)
 
         }
 
+        FirebaseApp.initializeApp(this)
+        database =
+            FirebaseDatabase.getInstance("https://pmdmpet-default-rtdb.europe-west1.firebasedatabase.app").reference
     }
 
-    fun limpiaCampos(){
+    private fun agregarAnimal() {
+
+        val cod = binding.codAnimal.text.toString().trim().toInt()
+        val nombre = binding.nomAnimal.text.toString().trim()
+        val raza = binding.razaAnimal.text.toString().trim()
+        val sexo = binding.sexoAnimal.text.toString().trim()
+        val fecha = binding.fechAnimal.text.toString().trim()
+        val Dni = binding.dniAnimal.text.toString().trim()
+
+        if (cod == null || nombre.isEmpty() || fecha.isEmpty() || raza.isEmpty() || sexo.isEmpty() || Dni.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingrese los datos del animal", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+
+        animalId = database.child("animales").push().key
+        val animal = Animales(
+            cod = cod,
+            nombre = nombre,
+            raza = raza,
+            sexo = sexo,
+            fechNac = fecha,
+            Dni = Dni,
+            foto = ""
+        )
+
+        if (animalId != null) {
+            database.child("animales").child(animalId!!).setValue(animal)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Animal agregado correctamente", Toast.LENGTH_SHORT).show()
+                    limpiaCampos()
+                    Log.d(
+                        "TAG",
+                        "cod: $cod, nombre: $nombre, raza: $raza, sexo: $sexo, fecha: $fecha, dni: $Dni"
+                    )
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Error al agregar el animal", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun modificaAnimal() {
+        val cod = binding.codAnimal.text.toString().trim().toInt()
+        val nombre = binding.nomAnimal.text.toString().trim()
+        val raza = binding.razaAnimal.text.toString().trim()
+        val sexo = binding.sexoAnimal.text.toString().trim()
+        val fecha = binding.fechAnimal.text.toString().trim()
+        val Dni = binding.dniAnimal.text.toString().trim()
+
+        if (nombre.isEmpty() || fecha.isEmpty() || raza.isEmpty() || sexo.isEmpty() || Dni.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingrese los datos del animal", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+
+        val animal = Animales(
+            cod = cod,
+            nombre = nombre,
+            raza = raza,
+            sexo = sexo,
+            fechNac = fecha,
+            Dni = Dni,
+            foto = ""
+        )
+
+        val animalRef = database.child("animales").child(animalId ?: "")
+
+        animalRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    animalRef.setValue(animal)
+                        .addOnSuccessListener {
+                            Toast.makeText(
+                                this@RegisAnimalActivity,
+                                "Animal modificado correctamente",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            limpiaCampos()
+                            Log.d(
+                                "TAG",
+                                "cod: $cod, nombre: $nombre, raza: $raza, sexo: $sexo, fecha: $fecha, dni: $Dni"
+                            )
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(
+                                this@RegisAnimalActivity,
+                                "Error al modificar el animal",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                } else {
+                    Toast.makeText(
+                        this@RegisAnimalActivity,
+                        "El animal con el código $cod no existe",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(
+                    this@RegisAnimalActivity,
+                    "Error al modificar el animal",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+    }
+
+    private fun eliminaAnimal(animalId: String) {
+        database.child("animales").child(animalId).removeValue()
+            .addOnSuccessListener {
+                Toast.makeText(this, "Animal eliminado correctamente", Toast.LENGTH_SHORT).show()
+                this.animalId = null
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al eliminar el animal", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    fun limpiaCampos() {
         binding.codAnimal.setText("")
         binding.nomAnimal.setText("")
         binding.razaAnimal.setText("")
@@ -120,7 +226,5 @@ class RegisAnimalActivity : AppCompatActivity() {
         //binding.fotoAnimal.setImageBitmap(BitmapFactory.decodeResource(this.resources, petlogopet))
     }
 
-    override fun onBackPressed() {
-        // impedir que usuario vuelva a pantalla login
-    }
+
 }
