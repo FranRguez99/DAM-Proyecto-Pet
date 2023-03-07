@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "556653605374",
-    "project_id": "loginbasico-7ae6f",
-    "storage_bucket": "loginbasico-7ae6f.appspot.com"
+    "project_number": "956574445344",
+    "project_id": "pmdmpet",
+    "storage_bucket": "pmdmpet.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:556653605374:android:1c5984460df0f2ca9290af",
+        "mobilesdk_app_id": "1:956574445344:android:0ab3ba3eadd4fb2df0b145",
         "android_client_info": {
           "package_name": "es.duarry.loginbasico"
         }
       },
       "oauth_client": [
         {
-          "client_id": "556653605374-6fljtngcj788nv9mi2gbmm09og22q4l6.apps.googleusercontent.com",
+          "client_id": "956574445344-0c77ugcmgeet8e6huratgjarfmt0r17g.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB1dojOGdyvt1uVsQCCLddisqaDwyERZeE"
+          "current_key": "AIzaSyAM1Z2iEwUoLcuJcsADRTlnwr07U4r55aQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "556653605374-6fljtngcj788nv9mi2gbmm09og22q4l6.apps.googleusercontent.com",
+              "client_id": "956574445344-0c77ugcmgeet8e6huratgjarfmt0r17g.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

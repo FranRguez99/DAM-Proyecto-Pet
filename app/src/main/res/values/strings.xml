@@ -6,8 +6,7 @@
     <string name="strRepitePasword">Repetir Contraseña</string>
     <string name="strLogin">Login</string>
     <string name="strVolverLogin">Volver</string>
-
-
+    <string name="strRegistroPregunta">¿No tienes una cuenta?</string>
     <string name="strRecuerdame">Recuérdame</string>
     <string name="strBtnTodos">Consulta Todos</string>
     <string name="strCabeceraLista">Lista de Animales Almacenados</string>
