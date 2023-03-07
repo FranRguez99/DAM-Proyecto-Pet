@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">PetPetPet</string>
+    <string name="strRegistro">Bienvenidos a PetPetPet</string>
+    <string name="strUser">Usuario</string>
+    <string name="strOPasword">Contraseña</string>
+    <string name="strRepitePasword">Repetir Contraseña</string>
+    <string name="strLogin">Login</string>
+    <string name="strVolverLogin">Volver</string>
+
+
+    <string name="strRecuerdame">Recuérdame</string>
+    <string name="strBtnTodos">Consulta Todos</string>
+    <string name="strCabeceraLista">Lista de Animales Almacenados</string>
+    <string name="strCodIdent">Cod. Ident.:</string>
+    <string name="strTituloRegis">Registro de Animales de Compañia</string>
+    <string name="strNombreRegis">Nombre:</string>
+    <string name="strRazaRegis">Raza:</string>
+    <string name="strSexoRegis">Sexo:</string>
+    <string name="strFechRegis">Fecha Nac.:</string>
+    <string name="strDNIRegis">DNI:</string>
+    <string name="strBtnAlta">Alta</string>
+    <string name="strBtnModi">Modifica</string>
+    <string name="strBtnBorra">Borra</string>
+    <string name="strbtnConsul">Consulta</string>
+    <string name="btnVolver">Volver</string>
+</resources>

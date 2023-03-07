@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "556653605374",
+    "project_id": "loginbasico-7ae6f",
+    "storage_bucket": "loginbasico-7ae6f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556653605374:android:1c5984460df0f2ca9290af",
+        "android_client_info": {
+          "package_name": "es.duarry.loginbasico"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556653605374-6fljtngcj788nv9mi2gbmm09og22q4l6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1dojOGdyvt1uVsQCCLddisqaDwyERZeE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556653605374-6fljtngcj788nv9mi2gbmm09og22q4l6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
