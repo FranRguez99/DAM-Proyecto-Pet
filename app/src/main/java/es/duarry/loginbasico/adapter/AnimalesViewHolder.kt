@@ -15,7 +15,7 @@ class AnimalesViewHolder(view:View):RecyclerView.ViewHolder(view) {
         binding.tvNombre.text = animalesModel.nombre
         binding.tvCodigo.text = animalesModel.cod.toString()
         Glide.with(binding.ivAnimales.context).load(animalesModel.foto).into(binding.ivAnimales)
-        itemView.setOnClickListener(){
+        binding.btnVerDatos.setOnClickListener(){
             Toast.makeText(binding.ivAnimales.context, "Raza: " + animalesModel.raza +" Fecha Nac: " + animalesModel.fechNac + " Sexo: " +animalesModel.sexo,Toast.LENGTH_SHORT).show()
         }
     }
