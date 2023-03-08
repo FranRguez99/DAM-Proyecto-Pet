@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.*
-import es.duarry.loginbasico.adapter.animalesAdapter
+import es.duarry.loginbasico.adapter.AnimalesAdapter
 import es.duarry.loginbasico.databinding.ActivityListadoBinding
 
 class ListadoActivity : AppCompatActivity() {
@@ -45,7 +45,7 @@ class ListadoActivity : AppCompatActivity() {
                     val animal = data.getValue(Animales::class.java)
                     animalesList.add(animal!!)
                 }
-                binding.recycledAnimales.adapter = animalesAdapter(animalesList)
+                binding.recycledAnimales.adapter = AnimalesAdapter(animalesList)
             }
 
             override fun onCancelled(error: DatabaseError) {
