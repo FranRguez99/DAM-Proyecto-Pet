@@ -11,7 +11,8 @@ class AnimalesViewHolder(view:View):RecyclerView.ViewHolder(view) {
 
     fun render(animalesModel: Animales){
         binding.tvNombre.text = animalesModel.nombre
-        binding.tvCodigo.text = animalesModel.cod.toString()
+        binding.tvDNI.text = animalesModel.Dni
+        binding.tvRaza.text = animalesModel.raza
         Glide.with(binding.ivAnimales.context).load(animalesModel.foto).into(binding.ivAnimales)
         binding.root.setOnClickListener{
             val intent = Intent(binding.root.context, VerAnimal::class.java)
@@ -21,6 +22,7 @@ class AnimalesViewHolder(view:View):RecyclerView.ViewHolder(view) {
             intent.putExtra("fecha_nacimiento", animalesModel.fechNac)
             intent.putExtra("sexo", animalesModel.sexo)
             intent.putExtra("dni", animalesModel.Dni)
+            intent.putExtra("foto", animalesModel.foto)
             binding.root.context.startActivity(intent)
         }
     }
