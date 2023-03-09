@@ -15,6 +15,9 @@
         android:theme="@style/Theme.LoginBasico"
         tools:targetApi="31">
         <activity
+            android:name=".ListadoUsuario"
+            android:exported="false" />
+        <activity
             android:name=".VerAnimal"
             android:exported="false">
             <meta-data

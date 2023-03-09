@@ -85,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
             intent = Intent(this, RegisAnimalActivity::class.java)
         } else {
             // Si el usuario no es admin
-            intent = Intent(this, ListadoActivity::class.java)
+            intent = Intent(this, ListadoUsuario::class.java)
         }
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -96,8 +96,11 @@ class LoginActivity : AppCompatActivity() {
                 val user = result.user
 
                 withContext(Dispatchers.Main) {
+                    intent.putExtra("usuario", usuario)
                     startActivity(intent)
                     actualizaUI(user)
+                    Toast.makeText(baseContext, "Conectado con éxito", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             } catch (e: Exception) {
                 // If sign in fails, display a message to the user.
