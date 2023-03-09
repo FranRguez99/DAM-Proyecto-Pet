@@ -15,10 +15,12 @@ class AnimalesViewHolder(view:View):RecyclerView.ViewHolder(view) {
         Glide.with(binding.ivAnimales.context).load(animalesModel.foto).into(binding.ivAnimales)
         binding.root.setOnClickListener{
             val intent = Intent(binding.root.context, VerAnimal::class.java)
+            intent.putExtra("cod", animalesModel.cod)
             intent.putExtra("nombre", animalesModel.nombre)
             intent.putExtra("raza", animalesModel.raza)
             intent.putExtra("fecha_nacimiento", animalesModel.fechNac)
             intent.putExtra("sexo", animalesModel.sexo)
+            intent.putExtra("dni", animalesModel.Dni)
             binding.root.context.startActivity(intent)
         }
     }

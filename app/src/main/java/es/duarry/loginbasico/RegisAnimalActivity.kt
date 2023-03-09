@@ -1,7 +1,6 @@
 package es.duarry.loginbasico
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -11,9 +10,6 @@ import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import es.duarry.loginbasico.R.drawable.petlogopet
 import es.duarry.loginbasico.databinding.RegisAnimalActivityBinding
 
 
