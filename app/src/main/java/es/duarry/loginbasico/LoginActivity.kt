@@ -77,9 +77,16 @@ class LoginActivity : AppCompatActivity() {
 
     private fun autentificacionLogin(){
 
-        val usuario = binding.user.editText?.text.toString()
+
         val contrasena = binding.pasword.editText?.text.toString()
-        val intent = Intent(this, RegisAnimalActivity::class.java)
+        val usuario = binding.user.editText?.text.toString()
+        if (usuario == "admin@admin.com") {
+            // Si el usuario es admin
+            intent = Intent(this, RegisAnimalActivity::class.java)
+        } else {
+            // Si el usuario no es admin
+            intent = Intent(this, ListadoActivity::class.java)
+        }
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -103,42 +110,5 @@ class LoginActivity : AppCompatActivity() {
         }
 
     }
-    // Confirmar que el usuario está registrado
-   /* fun checkUsuario(){
-        val checkUsuario = bd.verificaUsuario(usuario, contra)
-        if (checkUsuario) {
-            val intent = Intent(this, RegisAnimalActivity::class.java)
 
-            if (binding.switchRecuerdo.isChecked) {
-                sharedPreferences.edit().putString("usGuardado",usuario.trim()).apply()
-                sharedPreferences.edit().putString("conGuardado",contra.trim()).apply()
-            } else {
-                sharedPreferences.edit().putString("usGuardado","").apply()
-                sharedPreferences.edit().putString("conGuardado","").apply()
-            }
-
-            intent.putExtra("usuario", usuario)
-            startActivity(intent)
-        } else {
-            Snackbar.make(binding.textView2, "Usuario y/o contraseña incorrectos", Snackbar.LENGTH_SHORT).show()
-        }
-    }
-
-    // Datos iniciales de la bd
-    fun datosIniciales(){
-        val primeraVez = sharedPreferences.getBoolean("inicio",false)
-        if (!primeraVez){
-            bd.insterarUsuario()
-            bd.insertarAnimales()
-            sharedPreferences.edit().putBoolean("inicio",true).apply()
-        }
-    }
-
-    // Guardar credenciales
-    fun userGuardado(){
-        usuario = sharedPreferences.getString("usGuardado","").toString()
-        contra = sharedPreferences.getString("conGuardado","").toString()
-        binding.user.editText?.setText(usuario)
-        binding.pasword.editText?.setText(contra)
-    }*/
 }
