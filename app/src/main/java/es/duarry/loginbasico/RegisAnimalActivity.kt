@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.*
+import es.duarry.loginbasico.adapter.AnimalesAdapter
 import es.duarry.loginbasico.databinding.RegisAnimalActivityBinding
 
 
@@ -19,6 +20,8 @@ class RegisAnimalActivity : AppCompatActivity() {
     private lateinit var bd: BaseDatos
     private lateinit var database: DatabaseReference
     private var animalId: String? = null
+    private var listaAnimales: List<Animales> = emptyList()
+    lateinit var animalSeleccionado: Animales
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +32,7 @@ class RegisAnimalActivity : AppCompatActivity() {
 
         val intent = intent
         val usuario = intent.getStringExtra("usuario")
+
 
         binding.usuario.text = "Usuario: $usuario"
 
@@ -187,46 +191,60 @@ class RegisAnimalActivity : AppCompatActivity() {
             }
     }
 
-    private fun consultarAnimalPorCodigo() {
-        val cod = binding.codAnimal.text.toString().trim()
-        if (cod.isEmpty()) {
-            Toast.makeText(this, "Ingrese un código de animal válido", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val animalRef = database.child("animales").orderByChild("cod").equalTo(cod)
-
-        animalRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    val animal = dataSnapshot.children.first().getValue(Animales::class.java)
-                    animalId = dataSnapshot.children.first().key
-                    binding.codAnimal.setText(animal?.cod.toString())
-                    binding.nomAnimal.setText(animal?.nombre)
-                    binding.razaAnimal.setText(animal?.raza)
-                    binding.sexoAnimal.setText(animal?.sexo)
-                    binding.fechAnimal.setText(animal?.fechNac)
-                    binding.dniAnimal.setText(animal?.Dni)
-                } else {
-                    Toast.makeText(
-                        this@RegisAnimalActivity,
-                        "Animal no encontrado",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    limpiaCampos()
+    fun iniciarRecycledView(callback: (List<Animales>) -> Unit) {
+        database.child("animales").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val animalesList = mutableListOf<Animales>()
+                for (data in snapshot.children) {
+                    val animal = data.getValue(Animales::class.java)
+                    animalesList.add(animal!!)
                 }
+                callback(animalesList)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(
-                    this@RegisAnimalActivity,
-                    "Error al consultar el animal",
-                    Toast.LENGTH_SHORT
-                ).show()
-                limpiaCampos()
+                // Manejar errores aquí
             }
         })
     }
+
+
+    fun findAnimalById(id: Int): Animales? {
+        for (animal in listaAnimales) {
+            if (animal.cod == id) {
+                return animal
+            }
+        }
+        return null
+    }
+
+
+    private fun consultarAnimalPorCodigo() {
+        val codAnimalText = binding.codAnimal.text.toString()
+        if (codAnimalText.isEmpty()) {
+            Toast.makeText(this, "Ingrese un código de animal válido", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val cod: Int = codAnimalText.toInt()
+
+        iniciarRecycledView { animalesList ->
+            listaAnimales = animalesList
+
+            val animal = findAnimalById(cod)
+            animal?.let {
+                binding.codAnimal.setText(animal?.cod.toString())
+                binding.nomAnimal.setText(animal?.nombre)
+                binding.razaAnimal.setText(animal?.raza)
+                binding.sexoAnimal.setText(animal?.sexo)
+                binding.fechAnimal.setText(animal?.fechNac)
+                binding.dniAnimal.setText(animal?.Dni)
+            } ?: run {
+                Toast.makeText(this, "Animal no encontrado", Toast.LENGTH_SHORT).show()
+                return@iniciarRecycledView
+            }
+        }
+    }
+
 
 
 
