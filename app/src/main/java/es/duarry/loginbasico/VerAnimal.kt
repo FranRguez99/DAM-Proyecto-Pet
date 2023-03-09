@@ -3,11 +3,15 @@ package es.duarry.loginbasico
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import es.duarry.loginbasico.databinding.ActivityVerAnimalBinding
 
 class VerAnimal : AppCompatActivity() {
+    private lateinit var  binding: ActivityVerAnimalBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ver_animal)
+        binding = ActivityVerAnimalBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Recuperar los datos del intent
         val cod = intent.getIntExtra("cod", 0)
@@ -17,20 +21,12 @@ class VerAnimal : AppCompatActivity() {
         val sexo = intent.getStringExtra("sexo")
         val dni = intent.getStringExtra("dni")
 
-        // Encontrar los TextView correspondientes por ID
-        val tvCod = findViewById<TextView>(R.id.cod_animal)
-        val tvNombre = findViewById<TextView>(R.id.nom_animal)
-        val tvRaza = findViewById<TextView>(R.id.raza_animal)
-        val tvFechaNacimiento = findViewById<TextView>(R.id.fech_animal)
-        val tvSexo = findViewById<TextView>(R.id.sexo_animal)
-        val tvDni = findViewById<TextView>(R.id.dni_animal)
-
         // Establecer el texto de los TextView correspondientes
-        tvCod.text = cod.toString()
-        tvNombre.text = nombre
-        tvRaza.text = raza
-        tvFechaNacimiento.text = fechaNacimiento
-        tvSexo.text = sexo
-        tvDni.text = dni
+        binding.codAnimal.setText(cod.toString())
+        binding.nomAnimal.setText(nombre)
+        binding.razaAnimal.setText(raza)
+        binding.fechAnimal.setText(fechaNacimiento)
+        binding.sexoAnimal.setText(sexo)
+        binding.dniAnimal.setText(dni)
     }
 }
