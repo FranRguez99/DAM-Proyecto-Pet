@@ -26,6 +26,7 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
         auth = Firebase.auth
 
+
         binding.btregistro.setOnClickListener(){
             registerUser()
         }
