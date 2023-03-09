@@ -52,30 +52,7 @@ class RegisAnimalActivity : AppCompatActivity() {
         }
 
         binding.btnConsulta.setOnClickListener {
-            val cod = binding.codAnimal.text.toString()
-            val animal = bd.consultaAnimal(cod)
-
-            if (TextUtils.isEmpty(cod)) {
-                Snackbar.make(
-                    binding.textView2,
-                    "Debes introducir el código del animal registrado",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            } else if (animal.cod == 0) {
-                Snackbar.make(
-                    binding.textView2,
-                    "No existe ningún animal registrado con ese código",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            } else {
-                //actualizar campos
-                binding.nomAnimal.setText(animal.nombre)
-                binding.razaAnimal.setText(animal.raza)
-                binding.sexoAnimal.setText(animal.sexo)
-                binding.fechAnimal.setText(animal.fechNac)
-                binding.dniAnimal.setText(animal.Dni)
-                Glide.with(binding.fotoAnimal.context).load(animal.foto).into(binding.fotoAnimal)
-            }
+            consultarAnimalPorCodigo()
         }
 
         binding.btnTodos.setOnClickListener {
@@ -210,30 +187,48 @@ class RegisAnimalActivity : AppCompatActivity() {
             }
     }
 
-    private fun consultarAnimales() {
-        database.child("animales").addListenerForSingleValueEvent(object : ValueEventListener {
+    private fun consultarAnimalPorCodigo() {
+        val cod = binding.codAnimal.text.toString().trim()
+        if (cod.isEmpty()) {
+            Toast.makeText(this, "Ingrese un código de animal válido", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val animalRef = database.child("animales").orderByChild("cod").equalTo(cod)
+
+        animalRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val animales = ArrayList<Animales>()
-                for (animalSnapshot in dataSnapshot.children) {
-                    val animal = animalSnapshot.getValue(Animales::class.java)
-                    if (animal != null) {
-                        animales.add(animal)
-                    }
+                if (dataSnapshot.exists()) {
+                    val animal = dataSnapshot.children.first().getValue(Animales::class.java)
+                    animalId = dataSnapshot.children.first().key
+                    binding.codAnimal.setText(animal?.cod.toString())
+                    binding.nomAnimal.setText(animal?.nombre)
+                    binding.razaAnimal.setText(animal?.raza)
+                    binding.sexoAnimal.setText(animal?.sexo)
+                    binding.fechAnimal.setText(animal?.fechNac)
+                    binding.dniAnimal.setText(animal?.Dni)
+                } else {
+                    Toast.makeText(
+                        this@RegisAnimalActivity,
+                        "Animal no encontrado",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    limpiaCampos()
                 }
-                //aquí puedes hacer lo que quieras con la lista de animales obtenida
-                //por ejemplo, mostrarla en un RecyclerView o en una lista
-                //de elementos en una vista de lista
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(
                     this@RegisAnimalActivity,
-                    "Error al consultar los animales",
+                    "Error al consultar el animal",
                     Toast.LENGTH_SHORT
                 ).show()
+                limpiaCampos()
             }
         })
     }
+
+
 
     fun limpiaCampos() {
         binding.codAnimal.setText("")
