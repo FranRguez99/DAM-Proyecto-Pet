@@ -22,4 +22,5 @@
     <string name="strBtnBorra">Borra</string>
     <string name="strbtnConsul">Consulta</string>
     <string name="btnVolver">Volver</string>
+    <string name="verAnimal">+</string>
 </resources>

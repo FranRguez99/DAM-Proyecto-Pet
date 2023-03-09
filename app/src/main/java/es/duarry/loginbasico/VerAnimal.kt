@@ -3,6 +3,7 @@ package es.duarry.loginbasico
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import es.duarry.loginbasico.databinding.ActivityVerAnimalBinding
 
 class VerAnimal : AppCompatActivity() {
@@ -20,6 +21,7 @@ class VerAnimal : AppCompatActivity() {
         val fechaNacimiento = intent.getStringExtra("fecha_nacimiento")
         val sexo = intent.getStringExtra("sexo")
         val dni = intent.getStringExtra("dni")
+        val foto = intent.getStringExtra("foto")
 
         // Establecer el texto de los TextView correspondientes
         binding.codAnimal.setText(cod.toString())
@@ -28,5 +30,12 @@ class VerAnimal : AppCompatActivity() {
         binding.fechAnimal.setText(fechaNacimiento)
         binding.sexoAnimal.setText(sexo)
         binding.dniAnimal.setText(dni)
+
+        Glide.with(binding.fotoAnimal.context).load(foto).into(binding.fotoAnimal)
+
+        // Volver a la actividad anterior
+        binding.btnVolverListado.setOnClickListener {
+            finish()
+        }
     }
 }
